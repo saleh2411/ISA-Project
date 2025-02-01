@@ -1,4 +1,4 @@
-        .word 0x100 40                                 #set radius for example
+        .word 0x100 60                                 #set radius for example
         lw $s0, $imm1, $zero, $zero, 0x100, 0          #load radius
         mac $s0, $s0, $s0, $zero, 0, 0                 #squere radius   
         add $s1, $zero, $zero, $imm1, -1, 0            #initialize row_counter to -1
