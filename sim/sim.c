@@ -771,10 +771,10 @@ int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwreg
         ptr3 = ptr3->next;
         free(ptr2);
     }
-        while (ptr4 != NULL)
+        while (ptr5 != NULL)
     {
-        ptr3 = ptr4;
-        ptr4 = ptr4->next;
+        ptr4 = ptr5;
+        ptr5 = ptr5->next;
         free(ptr0);
     }
     return 0;
