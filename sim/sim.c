@@ -86,7 +86,7 @@ int handle_disk();
 int handle_monitor();
 int read_diskin(char* diskin_file);
 int write_file_diskout(char* diskout_file);
-int write_file_monitor(char* monitor_file, uint8_t is_binary);
+int write_monitor(char* monitor_file, uint8_t is_binary);
 int update_log_status();
 int update_log_hw_access(uint8_t rw, uint8_t IOReg);
 int read_irq2in(char* irq2in_file);
@@ -323,7 +323,7 @@ int write_file_diskout(char* diskout_file){
 }
 
 //write monitor data to monitor_file
-int write_file_monitor(char* monitor_file, uint8_t is_binary){
+int write_monitor(char* monitor_file, uint8_t is_binary){
     FILE* fmonitor;
     if (is_binary)
         fmonitor = fopen(monitor_file, "wb");
@@ -753,8 +753,8 @@ int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwreg
         write_file_trace(trace_path) != 0 ||
         write_file_hwregtrace_leds_display7seg(hwregtrace_path, leds_path, display7seg_path) != 0 ||
         write_file_cycles_regout(cycles_path, regout_path) != 0 ||
-        write_file_monitor(monitor_txt_path, 0) != 0 ||
-        write_file_monitor(monitor_yuv_path, 1) != 0)
+        write_monitor(monitor_txt_path, 0) != 0 ||
+        write_monitor(monitor_yuv_path, 1) != 0)
         return 1;
     struct irq2in* ptr0, * ptr1 = data_log.irq2in_head;
     struct hw_access* ptr2, * ptr3 = data_log.hw_head;
