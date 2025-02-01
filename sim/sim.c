@@ -84,7 +84,6 @@ int TIMER();
 int sector_copy(uint32_t* dest, uint32_t* src);
 int handle_disk();
 int handle_monitor();
-int tick_clk();
 int read_file_diskin(char* diskin_file);
 int write_file_diskout(char* diskout_file);
 int write_file_monitor(char* monitor_file, uint8_t is_binary);
@@ -257,12 +256,6 @@ int handle_monitor()
     return 0;
 }
 
-// in clk
-int tick_clk(){
-    IORegister[CLKS]++;
-    cycles++;
-    return 0;
-}
 
 //read diskin_file into disk
 int read_file_diskin(char* diskin_file){
@@ -843,7 +836,8 @@ int main(int argc, char* argv[])
 
         ISR();
 
-        tick_clk(); // iteration's end!
+        IORegister[CLKS]++;
+        cycles++;
     }
 
     if (finalization(argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14]) != 0)
