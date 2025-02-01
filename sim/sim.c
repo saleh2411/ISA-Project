@@ -98,7 +98,7 @@ int write_file_cycles_regout(char* cycles_file, char* regout_file);
 uint32_t extend_sign(uint32_t reg, uint8_t sign_bit);
 int execute_instruction();
 int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path);
-int finalization(char* dmemout_path, char* regout_path, char* trace_path, char* hwregtrace_path, char* cycles_path, char* leds_path, char* display7seg_path, char* diskout_path, char* monitor_txt_path, char* monitor_yuv_path);
+int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwregtrace_path, char* cycles_path, char* leds_path, char* display7seg_path, char* diskout_path, char* monitor_txt_path, char* monitor_yuv_path);
 
 
 
@@ -746,7 +746,7 @@ int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path
 }
 
 //write output files and free memory
-int finalization(char* dmemout_path, char* regout_path, char* trace_path, char* hwregtrace_path, char* cycles_path,char* leds_path, char* display7seg_path, char* diskout_path, char* monitor_txt_path, char* monitor_yuv_path){
+int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwregtrace_path, char* cycles_path,char* leds_path, char* display7seg_path, char* diskout_path, char* monitor_txt_path, char* monitor_yuv_path){
 
     if (write_file_dmemout(dmemout_path) != 0 ||
         write_file_diskout(diskout_path) != 0 ||
@@ -814,7 +814,7 @@ int main(int argc, char* argv[])
         cycles++;
     }
 
-    if (finalization(argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14]) != 0)
+    if (closing(argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14]) != 0)
         return 1;
 
     return 0;
