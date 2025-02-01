@@ -90,7 +90,7 @@ int write_file_monitor(char* monitor_file, uint8_t is_binary);
 int update_log_status();
 int update_log_hw_access(uint8_t rw, uint8_t IOReg);
 int read_irq2in(char* irq2in_file);
-int read_file_dmem_imem(char* dmem_file, char* imem_file);
+int read_dmem_imem(char* dmem_file, char* imem_file);
 int write_file_dmemout(char* dmemout_file);
 int write_file_trace(char* trace_file);
 int write_file_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file);
@@ -462,7 +462,7 @@ int read_irq2in(char* irq2in_file){
 }
 
 //read dmem_file,imem_file into d_mem, i_mem
-int read_file_dmem_imem(char* dmem_file, char* imem_file){
+int read_dmem_imem(char* dmem_file, char* imem_file){
     FILE* fdmem, * fimem;
     fdmem = fopen(dmem_file, "r");
     fimem = fopen(imem_file, "r");
@@ -737,7 +737,7 @@ int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path
     irq_busy = 0;
     disk_last_cmd_cycle = ~0;
 
-    if (read_file_dmem_imem(dmemin_path, imemin_path) != 0 ||
+    if (read_dmem_imem(dmemin_path, imemin_path) != 0 ||
         read_diskin(diskin_path) != 0 ||
         read_irq2in(irq_path))
         return 1;
