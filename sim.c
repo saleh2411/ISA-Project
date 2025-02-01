@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_DEPRECATE
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -91,7 +92,7 @@ int update_log_status();
 int update_log_hw_access(uint8_t rw, uint8_t IOReg);
 int free_log_status();
 int free_log_hw_access();
-int free_log_irq2in();
+int free_irq2in();
 int read_file_irq2in(char* irq2in_file);
 int read_file_dmem_imem(char* dmem_file, char* imem_file);
 int write_file_dmemout(char* dmemout_file);
@@ -457,7 +458,7 @@ int free_log_hw_access(){
     return 0;
 }
 
-int free_log_irq2in(){
+int free_irq2in(){
     // free only irq2in that we havn't reached to them due to lower cycles from their occourences.
     struct irq2in* ptr0, * ptr1 = data_log.irq2in_head;
 
@@ -808,7 +809,7 @@ int finalization(char* dmemout_path, char* regout_path, char* trace_path, char* 
 
     free_log_status();
     free_log_hw_access();
-    free_log_irq2in();
+    free_irq2in();
     return 0;
 }
 
