@@ -94,7 +94,7 @@ int read_dmem_imem(char* dmem_file, char* imem_file);
 int write_file_dmemout(char* dmemout_file);
 int write_file_trace(char* trace_file);
 int write_file_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file);
-int write_file_cycles_regout(char* cycles_file, char* regout_file);
+int write_cycles_regout(char* cycles_file, char* regout_file);
 uint32_t extend_sign(uint32_t reg, uint8_t sign_bit);
 int execute_instruction();
 int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path);
@@ -585,7 +585,7 @@ int write_file_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_fil
 }
 
 //write to files cycles number and registers at the end
-int write_file_cycles_regout(char* cycles_file, char* regout_file){
+int write_cycles_regout(char* cycles_file, char* regout_file){
     FILE* fcycles, * fregout;
     fcycles = fopen(cycles_file, "w");
     fregout = fopen(regout_file, "w");
@@ -752,7 +752,7 @@ int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwreg
         write_file_diskout(diskout_path) != 0 ||
         write_file_trace(trace_path) != 0 ||
         write_file_hwregtrace_leds_display7seg(hwregtrace_path, leds_path, display7seg_path) != 0 ||
-        write_file_cycles_regout(cycles_path, regout_path) != 0 ||
+        write_cycles_regout(cycles_path, regout_path) != 0 ||
         write_monitor(monitor_txt_path, 0) != 0 ||
         write_monitor(monitor_yuv_path, 1) != 0)
         return 1;
