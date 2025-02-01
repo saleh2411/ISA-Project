@@ -91,7 +91,7 @@ int update_log_status();
 int update_log_hw_access(uint8_t rw, uint8_t IOReg);
 int read_irq2in(char* irq2in_file);
 int read_dmem_imem(char* dmem_file, char* imem_file);
-int write_file_dmemout(char* dmemout_file);
+int write_dmemout(char* dmemout_file);
 int write_trace(char* trace_file);
 int write_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file);
 int write_cycles_regout(char* cycles_file, char* regout_file);
@@ -483,7 +483,7 @@ int read_dmem_imem(char* dmem_file, char* imem_file){
 }
 
 //write d_mem to dmemout_file each line contains 8-hex digits
-int write_file_dmemout(char* dmemout_file)
+int write_dmemout(char* dmemout_file)
 {
     int i;
 
@@ -748,7 +748,7 @@ int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path
 //write output files and free memory
 int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwregtrace_path, char* cycles_path,char* leds_path, char* display7seg_path, char* diskout_path, char* monitor_txt_path, char* monitor_yuv_path){
 
-    if (write_file_dmemout(dmemout_path) != 0 ||
+    if (write_dmemout(dmemout_path) != 0 ||
         write_diskout(diskout_path) != 0 ||
         write_trace(trace_path) != 0 ||
         write_hwregtrace_leds_display7seg(hwregtrace_path, leds_path, display7seg_path) != 0 ||
