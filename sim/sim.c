@@ -81,20 +81,20 @@ const char* get_IO_reg_name(uint8_t io_addr);
 int check_irq2in();
 int ISR();
 int TIMER();
-int sector_copy(uint32_t* dest, uint32_t* src);
+int sec_cpy(uint32_t* dest, uint32_t* src);
 int handle_disk();
 int handle_monitor();
-int read_file_diskin(char* diskin_file);
+int read_diskin(char* diskin_file);
 int write_file_diskout(char* diskout_file);
-int write_file_monitor(char* monitor_file, uint8_t is_binary);
+int write_monitor(char* monitor_file, uint8_t is_binary);
 int update_log_status();
 int update_log_hw_access(uint8_t rw, uint8_t IOReg);
-int read_file_irq2in(char* irq2in_file);
-int read_file_dmem_imem(char* dmem_file, char* imem_file);
+int read_irq2in(char* irq2in_file);
+int read_dmem_imem(char* dmem_file, char* imem_file);
 int write_file_dmemout(char* dmemout_file);
-int write_file_trace(char* trace_file);
-int write_file_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file);
-int write_file_cycles_regout(char* cycles_file, char* regout_file);
+int write_trace(char* trace_file);
+int write_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file);
+int write_cycles_regout(char* cycles_file, char* regout_file);
 uint32_t extend_sign(uint32_t reg, uint8_t sign_bit);
 int execute_instruction();
 int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path);
@@ -193,7 +193,7 @@ int TIMER()
 }
 
 // copy src to dest for SECTOR_SIZE
-int sector_copy(uint32_t* dest, uint32_t* src)
+int sec_cpy(uint32_t* dest, uint32_t* src)
 {
     uint8_t i;
     for (i = 0; i < SECTOR_SIZE; i++)
@@ -223,11 +223,11 @@ int handle_disk()
 
     if (IORegister[DISKCMD] == 1)
         // diskcmd == read
-        sector_copy(buffer, disk[IORegister[DISKSECTOR]]);
+        sec_cpy(buffer, disk[IORegister[DISKSECTOR]]);
 
     else if (IORegister[DISKCMD] == 2)
         // diskcmd == write
-        sector_copy(disk[IORegister[DISKSECTOR]], buffer);
+        sec_cpy(disk[IORegister[DISKSECTOR]], buffer);
 
 
     IORegister[DISKCMD] = 0; // set diskcmd=no command
@@ -255,7 +255,7 @@ int handle_monitor()
 
 
 //read diskin_file into disk
-int read_file_diskin(char* diskin_file){
+int read_diskin(char* diskin_file){
     FILE* fdiskin;
     fdiskin = fopen(diskin_file, "r");
     if (fdiskin == NULL)
@@ -323,7 +323,7 @@ int write_file_diskout(char* diskout_file){
 }
 
 //write monitor data to monitor_file
-int write_file_monitor(char* monitor_file, uint8_t is_binary){
+int write_monitor(char* monitor_file, uint8_t is_binary){
     FILE* fmonitor;
     if (is_binary)
         fmonitor = fopen(monitor_file, "wb");
@@ -423,7 +423,7 @@ int update_log_hw_access(uint8_t rw, uint8_t IOReg){
 
 
 //read irq2in_file into linked list each row is a node
-int read_file_irq2in(char* irq2in_file){
+int read_irq2in(char* irq2in_file){
     FILE* firq2in;
     firq2in = fopen(irq2in_file, "r");
     if (firq2in == NULL)
@@ -462,7 +462,7 @@ int read_file_irq2in(char* irq2in_file){
 }
 
 //read dmem_file,imem_file into d_mem, i_mem
-int read_file_dmem_imem(char* dmem_file, char* imem_file){
+int read_dmem_imem(char* dmem_file, char* imem_file){
     FILE* fdmem, * fimem;
     fdmem = fopen(dmem_file, "r");
     fimem = fopen(imem_file, "r");
@@ -512,7 +512,7 @@ int write_file_dmemout(char* dmemout_file)
 }
 
 //write trace file containing pc instruction and registers
-int write_file_trace(char* trace_file){
+int write_trace(char* trace_file){
     FILE* ftrace;
     ftrace = fopen(trace_file, "w");
 
@@ -542,7 +542,7 @@ int write_file_trace(char* trace_file){
 }
 
 //write hwregtrace_file, leds_file, display7seg_file(need IOrege while running)
-int write_file_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file)
+int write_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file)
 {
     FILE* fhwregtrace, * fleds, * fdisplay7seg;
     fhwregtrace = fopen(hwregtrace_file, "w");
@@ -585,7 +585,7 @@ int write_file_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_fil
 }
 
 //write to files cycles number and registers at the end
-int write_file_cycles_regout(char* cycles_file, char* regout_file){
+int write_cycles_regout(char* cycles_file, char* regout_file){
     FILE* fcycles, * fregout;
     fcycles = fopen(cycles_file, "w");
     fregout = fopen(regout_file, "w");
@@ -737,9 +737,9 @@ int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path
     irq_busy = 0;
     disk_last_cmd_cycle = ~0;
 
-    if (read_file_dmem_imem(dmemin_path, imemin_path) != 0 ||
-        read_file_diskin(diskin_path) != 0 ||
-        read_file_irq2in(irq_path))
+    if (read_dmem_imem(dmemin_path, imemin_path) != 0 ||
+        read_diskin(diskin_path) != 0 ||
+        read_irq2in(irq_path))
         return 1;
 
     return 0;
@@ -750,11 +750,11 @@ int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwreg
 
     if (write_file_dmemout(dmemout_path) != 0 ||
         write_file_diskout(diskout_path) != 0 ||
-        write_file_trace(trace_path) != 0 ||
-        write_file_hwregtrace_leds_display7seg(hwregtrace_path, leds_path, display7seg_path) != 0 ||
-        write_file_cycles_regout(cycles_path, regout_path) != 0 ||
-        write_file_monitor(monitor_txt_path, 0) != 0 ||
-        write_file_monitor(monitor_yuv_path, 1) != 0)
+        write_trace(trace_path) != 0 ||
+        write_hwregtrace_leds_display7seg(hwregtrace_path, leds_path, display7seg_path) != 0 ||
+        write_cycles_regout(cycles_path, regout_path) != 0 ||
+        write_monitor(monitor_txt_path, 0) != 0 ||
+        write_monitor(monitor_yuv_path, 1) != 0)
         return 1;
     struct irq2in* ptr0, * ptr1 = data_log.irq2in_head;
     struct hw_access* ptr2, * ptr3 = data_log.hw_head;
