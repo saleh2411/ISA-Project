@@ -81,7 +81,7 @@ const char* get_IO_reg_name(uint8_t io_addr);
 int check_irq2in();
 int ISR();
 int TIMER();
-int sector_copy(uint32_t* dest, uint32_t* src);
+int sec_cpy(uint32_t* dest, uint32_t* src);
 int handle_disk();
 int handle_monitor();
 int read_file_diskin(char* diskin_file);
@@ -193,7 +193,7 @@ int TIMER()
 }
 
 // copy src to dest for SECTOR_SIZE
-int sector_copy(uint32_t* dest, uint32_t* src)
+int sec_cpy(uint32_t* dest, uint32_t* src)
 {
     uint8_t i;
     for (i = 0; i < SECTOR_SIZE; i++)
@@ -223,11 +223,11 @@ int handle_disk()
 
     if (IORegister[DISKCMD] == 1)
         // diskcmd == read
-        sector_copy(buffer, disk[IORegister[DISKSECTOR]]);
+        sec_cpy(buffer, disk[IORegister[DISKSECTOR]]);
 
     else if (IORegister[DISKCMD] == 2)
         // diskcmd == write
-        sector_copy(disk[IORegister[DISKSECTOR]], buffer);
+        sec_cpy(disk[IORegister[DISKSECTOR]], buffer);
 
 
     IORegister[DISKCMD] = 0; // set diskcmd=no command
