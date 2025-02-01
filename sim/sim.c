@@ -89,6 +89,9 @@ int write_diskout(char* diskout_file);
 int write_monitor(char* monitor_file, uint8_t is_binary);
 int update_log_status();
 int update_log_hw_access(uint8_t rw, uint8_t IOReg);
+int free_log_status();
+int free_log_hw_access();
+int free_log_irq2in();
 int read_irq2in(char* irq2in_file);
 int read_dmem_imem(char* dmem_file, char* imem_file);
 int write_dmemout(char* dmemout_file);
@@ -421,6 +424,45 @@ int update_log_hw_access(uint8_t rw, uint8_t IOReg){
     return 0;
 }
 
+int free_log_status(){
+    struct status* ptr0, * ptr1 = data_log.status_head;
+
+    while (ptr1 != NULL)
+    {
+        ptr0 = ptr1;
+        ptr1 = ptr1->next;
+        free(ptr0);
+    }
+
+    return 0;
+}
+
+int free_log_hw_access(){
+    struct hw_access* ptr0, * ptr1 = data_log.hw_head;
+
+    while (ptr1 != NULL)
+    {
+        ptr0 = ptr1;
+        ptr1 = ptr1->next;
+        free(ptr0);
+    }
+
+    return 0;
+}
+
+int free_log_irq2in(){
+    // free only irq2in that we havn't reached to them due to lower cycles from their occourences.
+    struct irq2in* ptr0, * ptr1 = data_log.irq2in_head;
+
+    while (ptr1 != NULL)
+    {
+        ptr0 = ptr1;
+        ptr1 = ptr1->next;
+        free(ptr0);
+    }
+
+    return 0;
+}
 
 //read irq2in_file into linked list each row is a node
 int read_irq2in(char* irq2in_file){
@@ -756,27 +798,10 @@ int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwreg
         write_monitor(monitor_txt_path, 0) != 0 ||
         write_monitor(monitor_yuv_path, 1) != 0)
         return 1;
-    struct irq2in* ptr0, * ptr1 = data_log.irq2in_head;
-    struct hw_access* ptr2, * ptr3 = data_log.hw_head;
-    struct status* ptr4, * ptr5 = data_log.status_head;
-        while (ptr1 != NULL)
-    {
-        ptr0 = ptr1;
-        ptr1 = ptr1->next;
-        free(ptr0);
-    }
-        while (ptr3 != NULL)
-    {
-        ptr2 = ptr3;
-        ptr3 = ptr3->next;
-        free(ptr2);
-    }
-        while (ptr5 != NULL)
-    {
-        ptr4 = ptr5;
-        ptr5 = ptr5->next;
-        free(ptr0);
-    }
+
+    free_log_status();
+    free_log_hw_access();
+    free_log_irq2in();
     return 0;
 }
 
