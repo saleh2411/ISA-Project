@@ -79,7 +79,7 @@ unsigned long cycles;
 //Function declarations
 const char* get_IO_reg_name(uint8_t io_addr);
 int check_irq2in();
-int interrupt_service_routine();
+int ISR();
 int handle_timer();
 int sector_copy(uint32_t* dest, uint32_t* src);
 int handle_disk();
@@ -157,7 +157,7 @@ int check_irq2in()
 }
 
 // handels interrupts-ISR
-int interrupt_service_routine()
+int ISR()
 {
     if (irq_busy)
         return 0;
@@ -841,7 +841,7 @@ int main(int argc, char* argv[])
         handle_timer();
         handle_disk();
 
-        interrupt_service_routine();
+        ISR();
 
         tick_clk(); // iteration's end!
     }
