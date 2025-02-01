@@ -84,7 +84,7 @@ int TIMER();
 int sec_cpy(uint32_t* dest, uint32_t* src);
 int handle_disk();
 int handle_monitor();
-int read_file_diskin(char* diskin_file);
+int read_diskin(char* diskin_file);
 int write_file_diskout(char* diskout_file);
 int write_file_monitor(char* monitor_file, uint8_t is_binary);
 int update_log_status();
@@ -255,7 +255,7 @@ int handle_monitor()
 
 
 //read diskin_file into disk
-int read_file_diskin(char* diskin_file){
+int read_diskin(char* diskin_file){
     FILE* fdiskin;
     fdiskin = fopen(diskin_file, "r");
     if (fdiskin == NULL)
@@ -738,7 +738,7 @@ int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path
     disk_last_cmd_cycle = ~0;
 
     if (read_file_dmem_imem(dmemin_path, imemin_path) != 0 ||
-        read_file_diskin(diskin_path) != 0 ||
+        read_diskin(diskin_path) != 0 ||
         read_irq2in(irq_path))
         return 1;
 
