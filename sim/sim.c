@@ -80,7 +80,7 @@ unsigned long cycles;
 const char* get_IO_reg_name(uint8_t io_addr);
 int check_irq2in();
 int ISR();
-int handle_timer();
+int TIMER();
 int sector_copy(uint32_t* dest, uint32_t* src);
 int handle_disk();
 int handle_monitor();
@@ -179,7 +179,7 @@ int ISR()
 }
 
 //if the timer is enabeld and timercurrent == timermax, return 1, else return 0
-int handle_timer()
+int TIMER()
 {
     if (IORegister[TIMERENABLE] == 0)
         return 0;
@@ -838,7 +838,7 @@ int main(int argc, char* argv[])
         }
 
         handle_monitor();
-        handle_timer();
+        TIMER();
         handle_disk();
 
         ISR();
