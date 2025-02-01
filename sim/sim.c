@@ -77,35 +77,34 @@ unsigned long cycles;
 
 
 //Function declarations
-const char* get_IO_reg_name(uint8_t io_addr);
-int check_irq2in();
-int ISR();
-int TIMER();
-int sec_cpy(uint32_t* dest, uint32_t* src);
-int handle_disk();
-int handle_monitor();
-int read_diskin(char* diskin_file);
-int write_diskout(char* diskout_file);
-int write_monitor(char* monitor_file, uint8_t is_binary);
-int update_log_status();
-int update_log_hw_access(uint8_t rw, uint8_t IOReg);
+const char* get_IO_reg_name(uint8_t io_addr);//maps the io_addr index to the register name
+int check_irq2in();//if reg irq2in exists in the current cycle, return 1, else return 0
+int ISR();// handels interrupts-ISR
+int TIMER();//if the timer is enabeld and timercurrent == timermax, return 1, else return 0
+int sec_cpy(uint32_t* dest, uint32_t* src);// copy src to dest for SECTOR_SIZE
+int handle_disk();// copy src to dest for SECTOR_SIZE
+int handle_monitor();//read/write from/to disk instructions
+int read_diskin(char* diskin_file);//read diskin_file into disk
+int write_diskout(char* diskout_file);//parth diskout_file to valid file with disk data
+int write_monitor(char* monitor_file, uint8_t is_binary);//write monitor data to monitor_file
+int update_log_status();//update log status to linked list
+int update_log_hw_access(uint8_t rw, uint8_t IOReg);//update log io regester access
 int free_log_status();
 int free_log_hw_access();
 int free_log_irq2in();
-int read_irq2in(char* irq2in_file);
-int read_dmem_imem(char* dmem_file, char* imem_file);
-int write_dmemout(char* dmemout_file);
-int write_trace(char* trace_file);
-int write_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file);
-int write_cycles_regout(char* cycles_file, char* regout_file);
-uint32_t extend_sign(uint32_t reg, uint8_t sign_bit);
-int execute_instruction();
-int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path);
+int read_irq2in(char* irq2in_file);//read irq2in_file into linked list each row is a node
+int read_dmem_imem(char* dmem_file, char* imem_file);//read dmem_file,imem_file into d_mem, i_mem
+int write_dmemout(char* dmemout_file);//write d_mem to dmemout_file each line contains 8-hex digits
+int write_trace(char* trace_file);//write trace file containing pc instruction and registers
+int write_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file);//write trace file containing pc instruction and registers
+int write_cycles_regout(char* cycles_file, char* regout_file);//write to files cycles number and registers at the end
+uint32_t extend_sign(uint32_t reg, uint8_t sign_bit);//write to files cycles number and registers at the end
+int execute_instruction();//execute instruction
+int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path);//read input files abd put into structures
 int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwregtrace_path, char* cycles_path, char* leds_path, char* display7seg_path, char* diskout_path, char* monitor_txt_path, char* monitor_yuv_path);
+//write output files and free memory
 
 
-
-//maps the io_addr index to the register name
 const char* get_IO_reg_name(uint8_t io_addr) {
 	switch (io_addr) {
 	case IRQ0ENABLE: return "irq0enable";
@@ -133,7 +132,6 @@ const char* get_IO_reg_name(uint8_t io_addr) {
 	}
 }
 
-//if reg irq2in exists in the current cycle, return 1, else return 0
 int check_irq2in()
 {
     struct irq2in* ptr0;
@@ -155,7 +153,6 @@ int check_irq2in()
     return 0;
 }
 
-// handels interrupts-ISR
 int ISR()
 {
     if (irq_busy)
@@ -177,7 +174,6 @@ int ISR()
     return 0;
 }
 
-//if the timer is enabeld and timercurrent == timermax, return 1, else return 0
 int TIMER()
 {
     if (IORegister[TIMERENABLE] == 0)
@@ -195,7 +191,6 @@ int TIMER()
     return 0;
 }
 
-// copy src to dest for SECTOR_SIZE
 int sec_cpy(uint32_t* dest, uint32_t* src)
 {
     uint8_t i;
@@ -204,7 +199,6 @@ int sec_cpy(uint32_t* dest, uint32_t* src)
     return 0;
 }
 
-// copy src to dest for SECTOR_SIZE
 int handle_disk()
 {
     if (cycles - disk_last_cmd_cycle == 1024)
@@ -237,7 +231,6 @@ int handle_disk()
     return 0;
 }
 
-//read/write from/to disk instructions
 int handle_monitor()
 {
     if (!IORegister[MONITORCMD])
@@ -257,7 +250,6 @@ int handle_monitor()
 }
 
 
-//read diskin_file into disk
 int read_diskin(char* diskin_file){
     FILE* fdiskin;
     fdiskin = fopen(diskin_file, "r");
@@ -281,7 +273,6 @@ int read_diskin(char* diskin_file){
     return 0;
 }
 
-//parth diskout_file to valid file with disk data
 int write_diskout(char* diskout_file){
     FILE* fdiskout;
     int last_nonzero_line = -1, sector, i, eof_flag = 0;
@@ -325,7 +316,6 @@ int write_diskout(char* diskout_file){
     return 0;
 }
 
-//write monitor data to monitor_file
 int write_monitor(char* monitor_file, uint8_t is_binary){
     FILE* fmonitor;
     if (is_binary)
@@ -365,7 +355,6 @@ int write_monitor(char* monitor_file, uint8_t is_binary){
     return 0;
 }
 
-//update log status to linked list
 int update_log_status(){
     int i;
     struct status* status_p = (struct status*)malloc(sizeof(struct status));
@@ -394,7 +383,6 @@ int update_log_status(){
     return 0;
 }
 
-//update log io regester access
 int update_log_hw_access(uint8_t rw, uint8_t IOReg){
     uint32_t data = IORegister[IOReg];
     struct hw_access* hw_acc_p = (struct hw_access*)malloc(sizeof(struct hw_access));
@@ -464,7 +452,6 @@ int free_log_irq2in(){
     return 0;
 }
 
-//read irq2in_file into linked list each row is a node
 int read_irq2in(char* irq2in_file){
     FILE* firq2in;
     firq2in = fopen(irq2in_file, "r");
@@ -503,7 +490,6 @@ int read_irq2in(char* irq2in_file){
     return 0;
 }
 
-//read dmem_file,imem_file into d_mem, i_mem
 int read_dmem_imem(char* dmem_file, char* imem_file){
     FILE* fdmem, * fimem;
     fdmem = fopen(dmem_file, "r");
@@ -524,7 +510,6 @@ int read_dmem_imem(char* dmem_file, char* imem_file){
     return 0;
 }
 
-//write d_mem to dmemout_file each line contains 8-hex digits
 int write_dmemout(char* dmemout_file)
 {
     int i;
@@ -553,7 +538,6 @@ int write_dmemout(char* dmemout_file)
     return 0;
 }
 
-//write trace file containing pc instruction and registers
 int write_trace(char* trace_file){
     FILE* ftrace;
     ftrace = fopen(trace_file, "w");
@@ -583,7 +567,6 @@ int write_trace(char* trace_file){
     return 0;
 }
 
-//write hwregtrace_file, leds_file, display7seg_file(need IOrege while running)
 int write_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file)
 {
     FILE* fhwregtrace, * fleds, * fdisplay7seg;
@@ -626,7 +609,6 @@ int write_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, ch
     return 0;
 }
 
-//write to files cycles number and registers at the end
 int write_cycles_regout(char* cycles_file, char* regout_file){
     FILE* fcycles, * fregout;
     fcycles = fopen(cycles_file, "w");
@@ -649,7 +631,6 @@ int write_cycles_regout(char* cycles_file, char* regout_file){
     return 0;
 }
 
-//write to files cycles number and registers at the end
 uint32_t extend_sign(uint32_t reg, uint8_t sign_bit){
     int sign = (reg >> sign_bit) & 1;
     if (sign)
@@ -657,7 +638,6 @@ uint32_t extend_sign(uint32_t reg, uint8_t sign_bit){
     return reg;
 }
 
-//execute instruction
 int execute_instruction(){
     uint64_t inst = i_mem[pc];
     uint16_t prev_pc = pc; 
@@ -769,7 +749,6 @@ int execute_instruction(){
     return 0;
 }
 
-//read input files abd put into structures
 int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path){
     pc = 0;
     cycles = 0;
@@ -787,7 +766,6 @@ int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path
     return 0;
 }
 
-//write output files and free memory
 int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwregtrace_path, char* cycles_path,char* leds_path, char* display7seg_path, char* diskout_path, char* monitor_txt_path, char* monitor_yuv_path){
 
     if (write_dmemout(dmemout_path) != 0 ||
