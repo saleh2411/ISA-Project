@@ -89,7 +89,7 @@ int write_file_diskout(char* diskout_file);
 int write_file_monitor(char* monitor_file, uint8_t is_binary);
 int update_log_status();
 int update_log_hw_access(uint8_t rw, uint8_t IOReg);
-int read_file_irq2in(char* irq2in_file);
+int read_irq2in(char* irq2in_file);
 int read_file_dmem_imem(char* dmem_file, char* imem_file);
 int write_file_dmemout(char* dmemout_file);
 int write_file_trace(char* trace_file);
@@ -423,7 +423,7 @@ int update_log_hw_access(uint8_t rw, uint8_t IOReg){
 
 
 //read irq2in_file into linked list each row is a node
-int read_file_irq2in(char* irq2in_file){
+int read_irq2in(char* irq2in_file){
     FILE* firq2in;
     firq2in = fopen(irq2in_file, "r");
     if (firq2in == NULL)
@@ -739,7 +739,7 @@ int init(char* imemin_path, char* dmemin_path, char* diskin_path, char* irq_path
 
     if (read_file_dmem_imem(dmemin_path, imemin_path) != 0 ||
         read_file_diskin(diskin_path) != 0 ||
-        read_file_irq2in(irq_path))
+        read_irq2in(irq_path))
         return 1;
 
     return 0;
