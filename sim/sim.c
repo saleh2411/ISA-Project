@@ -807,8 +807,12 @@ int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwreg
 
 int main(int argc, char* argv[])
 {
-    if (argc != 15)
+    if (argc != 15){
+        printf("Usage: %s imemin.txt dmemin.txt diskin.txt irq2in.txt dmemout.txt regout.txt trace.txt hwregtrace.txt cycles.txt leds.txt display7seg.txt diskout.txt monitor.txt monitor.yuv\n", argv[0]);
         return 1;
+
+    }
+        
 
     if (init(argv[1], argv[2], argv[3], argv[4]) != 0)
         return 1;
