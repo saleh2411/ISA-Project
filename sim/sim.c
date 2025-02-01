@@ -92,7 +92,7 @@ int update_log_hw_access(uint8_t rw, uint8_t IOReg);
 int read_irq2in(char* irq2in_file);
 int read_dmem_imem(char* dmem_file, char* imem_file);
 int write_file_dmemout(char* dmemout_file);
-int write_file_trace(char* trace_file);
+int write_trace(char* trace_file);
 int write_hwregtrace_leds_display7seg(char* hwregtrace_file, char* leds_file, char* display7seg_file);
 int write_cycles_regout(char* cycles_file, char* regout_file);
 uint32_t extend_sign(uint32_t reg, uint8_t sign_bit);
@@ -512,7 +512,7 @@ int write_file_dmemout(char* dmemout_file)
 }
 
 //write trace file containing pc instruction and registers
-int write_file_trace(char* trace_file){
+int write_trace(char* trace_file){
     FILE* ftrace;
     ftrace = fopen(trace_file, "w");
 
@@ -750,7 +750,7 @@ int closing(char* dmemout_path, char* regout_path, char* trace_path, char* hwreg
 
     if (write_file_dmemout(dmemout_path) != 0 ||
         write_file_diskout(diskout_path) != 0 ||
-        write_file_trace(trace_path) != 0 ||
+        write_trace(trace_path) != 0 ||
         write_hwregtrace_leds_display7seg(hwregtrace_path, leds_path, display7seg_path) != 0 ||
         write_cycles_regout(cycles_path, regout_path) != 0 ||
         write_monitor(monitor_txt_path, 0) != 0 ||
